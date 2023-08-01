@@ -3,6 +3,9 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "vote".
@@ -34,12 +37,28 @@ class Vote extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'candidate_id', 'created_by', 'created_at', 'updated_by', 'updated_at'], 'required'],
+            [['user_id', 'candidate_id'], 'required'],
             [['user_id', 'candidate_id'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['created_by', 'updated_by'], 'string', 'max' => 255],
             [['candidate_id'], 'exist', 'skipOnError' => true, 'targetClass' => Candidate::class, 'targetAttribute' => ['candidate_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
+        ];
+    }
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'value' => new Expression('NOW()'),
+            ],
+            [
+                'class' => BlameableBehavior::class,
+                'value' => function () {
+                    return Yii::$app->user->isGuest ? 'GUEST' : Yii::$app->user->identity->username;
+                }
+            ]
         ];
     }
 

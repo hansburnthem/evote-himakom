@@ -3,6 +3,8 @@
 namespace app\controllers;
 
 use app\models\Candidate;
+use app\models\Vote;
+use http\Exception;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -10,6 +12,7 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use yii\web\ServerErrorHttpException;
 
 class SiteController extends Controller
 {
@@ -34,6 +37,7 @@ class SiteController extends Controller
                 'class' => VerbFilter::class,
                 'actions' => [
                     'logout' => ['post'],
+                    'vote' => ['post']
                 ],
             ],
         ];
@@ -106,5 +110,33 @@ class SiteController extends Controller
     public function actionStepVote()
     {
         return $this->render('step-vote');
+    }
+
+    public function actionVoteProof()
+    {
+        return $this->render('vote-proof', [
+            'vote' => Yii::$app->user->identity->vote
+        ]);
+    }
+
+    public function actionVote()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $post = Yii::$app->request->post();
+        $ref = (int) $post['ref'];
+        $user = Yii::$app->user->identity;
+        if ($user && empty($user->vote) && $ref) {
+            $vote = new Vote;
+            $vote->user_id = $user->id;
+            $vote->candidate_id = $ref;
+
+            if (!$vote->save()) {
+                throw new ServerErrorHttpException();
+            }
+        }
+        return [
+            'message' => 'Success Vote'
+        ];
     }
 }

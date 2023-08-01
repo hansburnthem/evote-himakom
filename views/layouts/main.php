@@ -56,6 +56,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         'items' => [
             ['label' => 'Home', 'url' => ['/site/index']],
             ['label' => 'Panduan', 'url' => ['/site/step-vote']],
+            !Yii::$app->user->isGuest && !empty(Yii::$app->user->identity->vote) ? ['label' => 'Bukti Surat Suara', 'url' => ['/site/vote-proof']] : '',
             Yii::$app->user->isGuest
                 ? ['label' => 'Login', 'url' => ['/site/login']]
                 : '<li class="nav-item">'

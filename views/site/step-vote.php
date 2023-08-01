@@ -2,7 +2,7 @@
 
 /** @var yii\web\View $this */
 
-$this->title = 'Tata Cara';
+$this->title = 'Panduan';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div>

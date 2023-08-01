@@ -15,9 +15,25 @@ $this->title = 'Vote';
         <img src="/images/welcome.webp" alt="bg" class="tw-mt-10 lg:tw-mt-24 tw-max-h-[500px] tw-w-auto">
     </div>
     <div class="tw-mt-16 tw-w-full tw-flex tw-flex-col lg:tw-flex-row tw-gap-5"
-         x-data="{
+     x-data="{
         voteClick: function (ref) {
-            console.log(ref)
+            const yiiCsrf = '<?php echo Yii::$app->request->csrfToken ?>';
+            axios.post('/site/vote', {
+                ref: ref,
+                _csrf: yiiCsrf
+              }, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+              })
+              .then(function (response) {
+                if (response.status === 200) {
+                    window.location = '/site/vote-proof'
+                }
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
         }
     }">
         <div class="tw-flex tw-flex-col tw-w-full lg:tw-w-1/2 tw-items-center tw-space-y-6">
