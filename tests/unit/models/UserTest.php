@@ -2,30 +2,30 @@
 
 namespace tests\unit\models;
 
-use app\models\User;
+use app\models\MUser;
 
 class UserTest extends \Codeception\Test\Unit
 {
     public function testFindUserById()
     {
-        verify($user = User::findIdentity(100))->notEmpty();
+        verify($user = MUser::findIdentity(100))->notEmpty();
         verify($user->username)->equals('admin');
 
-        verify(User::findIdentity(999))->empty();
+        verify(MUser::findIdentity(999))->empty();
     }
 
     public function testFindUserByAccessToken()
     {
-        verify($user = User::findIdentityByAccessToken('100-token'))->notEmpty();
+        verify($user = MUser::findIdentityByAccessToken('100-token'))->notEmpty();
         verify($user->username)->equals('admin');
 
-        verify(User::findIdentityByAccessToken('non-existing'))->empty();        
+        verify(MUser::findIdentityByAccessToken('non-existing'))->empty();
     }
 
     public function testFindUserByUsername()
     {
-        verify($user = User::findByUsername('admin'))->notEmpty();
-        verify(User::findByUsername('not-admin'))->empty();
+        verify($user = MUser::findByUsername('admin'))->notEmpty();
+        verify(MUser::findByUsername('not-admin'))->empty();
     }
 
     /**
@@ -33,7 +33,7 @@ class UserTest extends \Codeception\Test\Unit
      */
     public function testValidateUser()
     {
-        $user = User::findByUsername('admin');
+        $user = MUser::findByUsername('admin');
         verify($user->validateAuthKey('test100key'))->notEmpty();
         verify($user->validateAuthKey('test102key'))->empty();
 

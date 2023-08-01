@@ -32,16 +32,30 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 <header id="header">
     <?php
     NavBar::begin([
-        'brandLabel' => Yii::$app->name,
+        'brandLabel' => '<div class="tw-flex tw-flex-row tw-items-center tw-justify-center">'
+            . Html::img(
+                '\images\himakom.png',
+                [
+                    'style' => 'width: 70px;'
+                ]
+            )
+            . Html::img(
+                '\images\kpuuper.webp',
+                [
+                    'style' => 'height: 50px;'
+                ]
+            )
+            . '</div>',
         'brandUrl' => Yii::$app->homeUrl,
-        'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark fixed-top']
+        'options' => [
+            'class' => 'navbar-expand-md navbar-dark tw-bg-gray-900 fixed-top',
+        ]
     ]);
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav'],
         'items' => [
             ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'About', 'url' => ['/site/about']],
-            ['label' => 'Contact', 'url' => ['/site/contact']],
+            ['label' => 'Panduan', 'url' => ['/site/step-vote']],
             Yii::$app->user->isGuest
                 ? ['label' => 'Login', 'url' => ['/site/login']]
                 : '<li class="nav-item">'
@@ -58,11 +72,11 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
     ?>
 </header>
 
-<main id="main" class="flex-shrink-0" role="main">
+<main id="main" class="tw-mt-10 tw-bg-[url('/images/bg2.webp')] tw-bg-cover" role="main">
     <div class="container">
-        <?php if (!empty($this->params['breadcrumbs'])): ?>
-            <?= Breadcrumbs::widget(['links' => $this->params['breadcrumbs']]) ?>
-        <?php endif ?>
+<!--        --><?php //if (!empty($this->params['breadcrumbs'])): ?>
+<!--            --><?php //= Breadcrumbs::widget(['links' => $this->params['breadcrumbs']]) ?>
+<!--        --><?php //endif ?>
         <?= Alert::widget() ?>
         <?= $content ?>
     </div>
@@ -71,8 +85,8 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 <footer id="footer" class="mt-auto py-3 bg-light">
     <div class="container">
         <div class="row text-muted">
-            <div class="col-md-6 text-center text-md-start">&copy; My Company <?= date('Y') ?></div>
-            <div class="col-md-6 text-center text-md-end"><?= Yii::powered() ?></div>
+            <div class="col-md-6 text-center text-md-start">&copy; HIMAKOM Universitas Pertamina <?= date('Y') ?></div>
+<!--            <div class="col-md-6 text-center text-md-end">--><?php //= Yii::powered() ?><!--</div>-->
         </div>
     </div>
 </footer>

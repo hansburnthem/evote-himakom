@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Candidate;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -46,11 +47,7 @@ class SiteController extends Controller
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction',
-            ],
-            'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
-            ],
+            ]
         ];
     }
 
@@ -61,7 +58,16 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $user = Yii::$app->user->identity;
+        $voteDate = Candidate::find()
+            ->select('vote_date')
+            ->limit(1)
+            ->orderBy('vote_date DESC')
+            ->scalar();
+        $disabled = (empty($user) || !empty($user->vote)) || date('Y-m-d H:i:s') < $voteDate;
+        return $this->render('index', [
+            'disabled' => $disabled
+        ]);
     }
 
     /**
@@ -77,9 +83,8 @@ class SiteController extends Controller
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+            return $this->goHome();
         }
-
         $model->password = '';
         return $this->render('login', [
             'model' => $model,
@@ -98,31 +103,8 @@ class SiteController extends Controller
         return $this->goHome();
     }
 
-    /**
-     * Displays contact page.
-     *
-     * @return Response|string
-     */
-    public function actionContact()
+    public function actionStepVote()
     {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
-
-            return $this->refresh();
-        }
-        return $this->render('contact', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Displays about page.
-     *
-     * @return string
-     */
-    public function actionAbout()
-    {
-        return $this->render('about');
+        return $this->render('step-vote');
     }
 }
